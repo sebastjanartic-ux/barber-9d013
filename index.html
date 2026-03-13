@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BARBER - Mehr als nur ein Haarschnitt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --orange: #d4861a;
+            --orange-hover: #e6961f;
+            --dark: #1a1a1a;
+            --darker: #111;
+            --white: #fff;
+            --light: #f5f0eb;
+            --gray: #888;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--white);
+            background: var(--darker);
+        }
+
+        /* NAV */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(17,17,17,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212,134,26,0.3);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: 3px;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 8px 16px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--orange);
+        }
+
+        .nav-links { display: flex; gap: 4px; align-items: center; }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 2px;
+            background: var(--white);
+            transition: 0.3s;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background:
+                linear-gradient(rgba(17,17,17,0.55), rgba(17,17,17,0.55)),
+                url('images/hero-bg.jpg') center/cover no-repeat;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(36px, 6vw, 72px);
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-shadow: 2px 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .hero h1 span { color: var(--orange); }
+
+        .hero p {
+            font-size: clamp(16px, 2vw, 20px);
+            margin-bottom: 35px;
+            color: rgba(255,255,255,0.85);
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 40px;
+            background: var(--orange);
+            color: var(--white);
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212,134,26,0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--orange);
+            color: var(--orange);
+        }
+
+        .btn-outline:hover {
+            background: var(--orange);
+            color: var(--white);
+        }
+
+        /* SECTIONS */
+        section { padding: 100px 20px; }
+
+        .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(28px, 4vw, 42px);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 60px;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
+        .section-line {
+            width: 60px;
+            height: 3px;
+            background: var(--orange);
+            margin: 0 auto 20px;
+        }
+
+        /* SPECIALTIES */
+        .specialties { background: var(--light); color: var(--dark); }
+
+        .specialties .section-title { color: var(--dark); }
+
+        .spec-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .spec-item .icon {
+            width: 90px;
+            height: 90px;
+            border: 3px solid var(--orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+            transition: all 0.3s;
+        }
+
+        .spec-item:hover .icon {
+            background: var(--orange);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+
+        .spec-item h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ABOUT */
+        .about { background: var(--dark); }
+
+        .about-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-img {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border: 3px solid var(--orange);
+        }
+
+        .about-text h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .about-text p {
+            color: rgba(255,255,255,0.75);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        /* SERVICES / PRICES */
+        .services { background: var(--darker); }
+
+        .price-grid {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .price-item:hover { border-color: var(--orange); }
+
+        .price-name {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-desc {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .price-dots {
+            flex: 1;
+            border-bottom: 1px dotted rgba(255,255,255,0.2);
+            margin: 0 20px;
+            min-width: 40px;
+        }
+
+        .price-value {
+            font-family: 'Oswald', sans-serif;
+            font-size: 22px;
+            color: var(--orange);
+            white-space: nowrap;
+        }
+
+        /* GALLERY */
+        .gallery { background: var(--dark); }
+
+        .gallery-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 1;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img { transform: scale(1.1); }
+
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(212,134,26,0.0);
+            transition: background 0.3s;
+        }
+
+        .gallery-item:hover::after {
+            background: rgba(212,134,26,0.25);
+        }
+
+        /* CONTACT */
+        .contact { background: var(--darker); }
+
+        .contact-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-info h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 22px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .info-item .icon-sm {
+            width: 40px;
+            height: 40px;
+            background: var(--orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .info-item p { color: rgba(255,255,255,0.75); font-weight: 300; line-height: 1.6; }
+        .info-item strong { color: var(--white); font-weight: 600; display: block; margin-bottom: 2px; }
+
+        .hours-table { margin-top: 30px; }
+        .hours-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .hours-row span:first-child { color: rgba(255,255,255,0.6); }
+        .hours-row span:last-child { color: var(--orange); font-weight: 600; }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--white);
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            outline: none;
+            border-color: var(--orange);
+        }
+
+        .contact-form textarea { height: 140px; resize: vertical; }
+
+        .contact-form .btn { width: 100%; text-align: center; }
+
+        /* FOOTER */
+        footer {
+            background: #0a0a0a;
+            padding: 50px 20px 25px;
+            border-top: 1px solid rgba(212,134,26,0.2);
+        }
+
+        .footer-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            color: var(--orange);
+        }
+
+        .footer-col a {
+            display: block;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            padding: 4px 0;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-col a:hover { color: var(--orange); }
+
+        .footer-col p { color: rgba(255,255,255,0.5); font-size: 14px; line-height: 1.6; }
+
+        .social-links { display: flex; gap: 12px; margin-top: 15px; }
+
+        .social-links a {
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            border-color: var(--orange);
+            background: var(--orange);
+            color: var(--white);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.35);
+            font-size: 13px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(17,17,17,0.98);
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .nav-links.open { display: flex; }
+
+            .about-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-img { height: 300px; }
+
+            section { padding: 70px 20px; }
+        }
+
+        /* SCROLL SMOOTH */
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="nav-inner">
+        <a href="#" class="logo">
+            <div class="logo-icon">&#9986;</div>
+            <span class="logo-text">BARBER</span>
+        </a>
+        <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links">
+            <a href="#home" class="active">Startseite</a>
+            <a href="#about">&#220;ber uns</a>
+            <a href="#services">Preise</a>
+            <a href="#gallery">Galerie</a>
+            <a href="#contact">Kontakt</a>
+            <a href="#contact" class="btn" style="padding:10px 24px; font-size:13px;">Termin buchen</a>
+        </div>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <div class="hero-content">
+        <h1><span>BARBER</span> &mdash; Mehr als nur ein Haarschnitt.</h1>
+        <p>Ihr professioneller Herrenfriseur und Bartspezialist. Tradition trifft modernen Stil.</p>
+        <a href="#contact" class="btn">Termin Buchen</a>
+    </div>
+</section>
+
+<!-- SPECIALTIES -->
+<section class="specialties" id="specialties">
+    <div class="section-line"></div>
+    <h2 class="section-title">Unsere Spezilit&auml;ten</h2>
+    <p class="section-subtitle" style="color:#666;">Klassisches Handwerk mit modernem Flair</p>
+    <div class="spec-grid">
+        <div class="spec-item">
+            <div class="icon">&#9986;</div>
+            <h3>Haarschnitt &amp; Styling</h3>
+        </div>
+        <div class="spec-item">
+            <div class="icon">&#9999;</div>
+            <h3>Traditionelle Nassrasur</h3>
+        </div>
+        <div class="spec-item">
+            <div class="icon">&#128104;</div>
+            <h3>Bartpflege &amp; Konturen</h3>
+        </div>
+        <div class="spec-item">
+            <div class="icon">&#9883;</div>
+            <h3>Gesichtsbehandlungen</h3>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+    <div class="about-grid">
+        <img src="images/about.jpg" alt="Barber bei der Arbeit" class="about-img">
+        <div class="about-text">
+            <div class="section-line" style="margin:0 0 20px;"></div>
+            <h3>&#220;ber uns</h3>
+            <p>Willkommen bei BARBER &mdash; dem Ort, an dem Tradition auf modernen Stil trifft. Seit Jahren pflegen wir die Kunst des klassischen Barbierhandwerks und verbinden sie mit aktuellen Trends.</p>
+            <p>Unser erfahrenes Team sorgt daf&uuml;r, dass jeder Besuch ein besonderes Erlebnis wird. Ob klassischer Haarschnitt, Bartpflege oder eine entspannende Nassrasur &mdash; bei uns sind Sie in besten H&auml;nden.</p>
+            <a href="#services" class="btn-outline btn">Unsere Leistungen</a>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+    <div class="section-line"></div>
+    <h2 class="section-title">Dienstleistungen &amp; Preise</h2>
+    <p class="section-subtitle">Qualit&auml;t, die man sp&uuml;rt</p>
+    <div class="price-grid">
+        <div class="price-item">
+            <div>
+                <div class="price-name">Haarschnitt</div>
+                <div class="price-desc">Waschen, Schneiden, Styling</div>
+            </div>
+            <div class="price-dots"></div>
+            <div class="price-value">&euro; 25</div>
+        </div>
+        <div class="price-item">
+            <div>
+                <div class="price-name">Bart trimmen</div>
+                <div class="price-desc">Konturen &amp; Pflege</div>
+            </div>
+            <div class="price-dots"></div>
+            <div class="price-value">&euro; 15</div>
+        </div>
+        <div class="price-item">
+            <div>
+                <div class="price-name">Haarschnitt + Bart</div>
+                <div class="price-desc">Komplett-Paket</div>
+            </div>
+            <div class="price-dots"></div>
+            <div class="price-value">&euro; 35</div>
+        </div>
+        <div class="price-item">
+            <div>
+                <div class="price-name">Nassrasur</div>
+                <div class="price-desc">Traditionell mit warmen T&uuml;chern</div>
+            </div>
+            <div class="price-dots"></div>
+            <div class="price-value">&euro; 20</div>
+        </div>
+        <div class="price-item">
+            <div>
+                <div class="price-name">Gesichtsbehandlung</div>
+                <div class="price-desc">Reinigung &amp; Pflege</div>
+            </div>
+            <div class="price-dots"></div>
+            <div class="price-value">&euro; 30</div>
+        </div>
+        <div class="price-item">
+            <div>
+                <div class="price-name">Kopfmassage</div>
+                <div class="price-desc">Entspannung pur</div>
+            </div>
+            <div class="price-dots"></div>
+            <div class="price-value">&euro; 10</div>
+        </div>
+    </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery" id="gallery">
+    <div class="section-line"></div>
+    <h2 class="section-title">Galerie</h2>
+    <p class="section-subtitle">Einblicke in unsere Arbeit</p>
+    <div class="gallery-grid">
+        <div class="gallery-item">
+            <img src="images/gallery1.jpg" alt="Haarschnitt">
+        </div>
+        <div class="gallery-item">
+            <img src="images/gallery2.jpg" alt="Bartpflege">
+        </div>
+        <div class="gallery-item">
+            <img src="images/gallery3.jpg" alt="Barbershop Interior">
+        </div>
+        <div class="gallery-item">
+            <img src="images/gallery4.jpg" alt="Styling">
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+    <div class="section-line"></div>
+    <h2 class="section-title">Kontakt</h2>
+    <p class="section-subtitle">Besuchen Sie uns oder schreiben Sie uns</p>
+    <div class="contact-grid">
+        <div class="contact-info">
+            <h3>Finden Sie uns</h3>
+            <div class="info-item">
+                <div class="icon-sm">&#128205;</div>
+                <p><strong>Adresse</strong>Musterstra&szlig;e 12, 10115 Berlin</p>
+            </div>
+            <div class="info-item">
+                <div class="icon-sm">&#128222;</div>
+                <p><strong>Telefon</strong>+49 123 456 789</p>
+            </div>
+            <div class="info-item">
+                <div class="icon-sm">&#9993;</div>
+                <p><strong>E-Mail</strong>info@barber.de</p>
+            </div>
+            <div class="hours-table">
+                <h3 style="margin-bottom:15px;">&Ouml;ffnungszeiten</h3>
+                <div class="hours-row"><span>Mo - Fr</span><span>9:00 - 19:00 Uhr</span></div>
+                <div class="hours-row"><span>Sa</span><span>9:00 - 16:00 Uhr</span></div>
+                <div class="hours-row"><span>So</span><span>Geschlossen</span></div>
+            </div>
+        </div>
+        <div class="contact-form">
+            <h3 style="font-family:'Oswald'; text-transform:uppercase; margin-bottom:25px; font-size:22px;">Nachricht senden</h3>
+            <input type="text" placeholder="Ihr Name">
+            <input type="email" placeholder="Ihre E-Mail">
+            <input type="tel" placeholder="Telefonnummer">
+            <textarea placeholder="Ihre Nachricht..."></textarea>
+            <button class="btn" type="submit">Nachricht senden</button>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <a href="#" class="logo" style="margin-bottom:15px;">
+                <div class="logo-icon">&#9986;</div>
+                <span class="logo-text">BARBER</span>
+            </a>
+            <p>Tradition trifft modernen Stil. Ihr Barbershop f&uuml;r den perfekten Look.</p>
+            <div class="social-links">
+                <a href="#">f</a>
+                <a href="#">in</a>
+                <a href="#">&#9737;</a>
+            </div>
+        </div>
+        <div class="footer-col">
+            <h4>Navigation</h4>
+            <a href="#home">Startseite</a>
+            <a href="#about">&Uuml;ber uns</a>
+            <a href="#services">Preise</a>
+            <a href="#gallery">Galerie</a>
+            <a href="#contact">Kontakt</a>
+        </div>
+        <div class="footer-col">
+            <h4>&Ouml;ffnungszeiten</h4>
+            <p>Mo - Fr: 9:00 - 19:00<br>Sa: 9:00 - 16:00<br>So: Geschlossen</p>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 BARBER. Alle Rechte vorbehalten.
+    </div>
+</footer>
+
+</body>
+</html>
