@@ -442,27 +442,39 @@
             body { padding-top: 64px; }
         }
 
-        /* WEATHER WIDGET */
-        .weather-widget {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.78rem;
-            color: var(--gray);
-            cursor: pointer;
-            padding: 4px 10px;
+        /* WEATHER TICKER */
+        .weather-ticker {
+            overflow: hidden;
+            width: 120px;
+            height: 28px;
             border: 1px solid var(--border);
             border-radius: 20px;
-            transition: background 0.2s;
-            white-space: nowrap;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            position: relative;
         }
-        .weather-widget:hover { background: var(--light); }
-        .weather-widget .wicon { font-size: 1rem; }
-        .weather-widget .wtemp { font-weight: 600; color: var(--dark); }
-        .weather-widget .wcity { font-size: 0.7rem; }
         @media (max-width: 480px) {
-            .weather-widget .wcity { display: none; }
+            .weather-ticker { width: 90px; }
         }
+        .ticker-track {
+            display: flex;
+            gap: 24px;
+            white-space: nowrap;
+            font-size: 0.78rem;
+            color: var(--dark);
+            animation: none;
+        }
+        .ticker-track.scrolling {
+            animation: tickerScroll 8s linear infinite;
+        }
+        @keyframes tickerScroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .ticker-item { display: inline-flex; align-items: center; gap: 4px; }
+        .ticker-item .label { font-size: 0.65rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
+        .ticker-item .val { font-weight: 600; }
     </style>
 </head>
 <body>
@@ -471,10 +483,10 @@
     <div class="header-inner">
         <a class="logo" href="#">FOLX<span>NEWS</span><span class="logo-sub">Volksmusik & Schlager</span></a>
         <div style="display:flex;align-items:center;gap:12px">
-            <div class="weather-widget" id="weather-widget" onclick="refreshWeather()" title="Standort-Wetter">
-                <span class="wicon" id="w-icon">🌡️</span>
-                <span class="wtemp" id="w-temp">--°</span>
-                <span class="wcity" id="w-city">...</span>
+            <div class="weather-ticker" id="weather-ticker">
+                <div class="ticker-track" id="ticker-track">
+                    <span id="w-loading">⏳</span>
+                </div>
             </div>
             <div class="date-badge" id="current-date"></div>
             <div class="hamburger" onclick="toggleMenu()" id="hamburger">
@@ -750,26 +762,55 @@ const weatherIcons = {
 
 async function refreshWeather() {
     try {
-        // Step 1: Get city from IP (no permission needed)
-        const geo = await fetch('https://ipapi.co/json/');
+        // IP geolocation - no permission needed, with timeout
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 4000);
+        
+        const geo = await fetch('https://ipapi.co/json/', {signal: controller.signal});
+        clearTimeout(timeout);
         const loc = await geo.json();
         const city = loc.city || loc.region || '';
         const lat = loc.latitude;
         const lon = loc.longitude;
         
-        // Step 2: Get weather from wttr.in
-        const r = await fetch(`https://wttr.in/${lat},${lon}?format=j1`);
+        // Get weather
+        const controller2 = new AbortController();
+        const timeout2 = setTimeout(() => controller2.abort(), 4000);
+        const r = await fetch(`https://wttr.in/${lat},${lon}?format=j1`, {signal: controller2.signal});
+        clearTimeout(timeout2);
         const d = await r.json();
         const cur = d.current_condition[0];
         const temp = cur.temp_C;
         const desc = cur.weatherDesc[0].value;
         const icon = Object.entries(weatherIcons).find(([k]) => desc.toLowerCase().includes(k.toLowerCase()))?.[1] || '🌡️';
         
-        document.getElementById('w-icon').textContent = icon;
-        document.getElementById('w-temp').textContent = temp + '°C';
-        document.getElementById('w-city').textContent = city;
+        // Build ticker items (doubled for seamless loop)
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
+        
+        const items = [
+            `<span class="ticker-item"><span class="val">${icon} ${temp}°C</span></span>`,
+            `<span class="ticker-item"><span class="label">📍</span><span class="val">${city}</span></span>`,
+            `<span class="ticker-item"><span class="label">🕐</span><span class="val">${timeStr}</span></span>`,
+        ];
+        const track = document.getElementById('ticker-track');
+        const doubled = [...items, ...items].join('<span style="margin:0 8px;color:#ddd">|</span>');
+        track.innerHTML = doubled;
+        track.classList.add('scrolling');
+        
+        // Update time every minute
+        setInterval(() => {
+            const t = new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
+            const timeEls = track.querySelectorAll('.ticker-item');
+            timeEls.forEach(el => { if(el.textContent.includes(':')) el.querySelector('.val').textContent = t; });
+        }, 60000);
+        
     } catch(e) {
-        document.getElementById('w-widget') && (document.getElementById('weather-widget').style.display = 'none');
+        const track = document.getElementById('ticker-track');
+        if (track) {
+            const now = new Date();
+            track.innerHTML = `<span class="ticker-item"><span class="val">🕐 ${now.toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'})}</span></span>`;
+        }
     }
 }
 
