@@ -506,8 +506,10 @@ function shortMsg(msg, len=80) {
     if (!msg) return '';
     let clean = msg;
     // Remove FOLX NEWS header line (📰 FOLX NEWS – DD.MM.YYYY | HH:MM 📰)
-    clean = clean.replace(/^[📰\s]*FOLX NEWS[\s–-]+[\d\.]+[\s|]+[\d:]+[\s📰]*/i, '');
-    clean = clean.replace(/^[📰\s]*NOVICE FOLX[\s–-]+[\d\.]+[\s|]+[\d:]+[\s📰]*/i, '');
+    clean = clean.replace(/^[\s\S]*?FOLX NEWS[^\n]*\n?/i, '');
+    clean = clean.replace(/^[\s\S]*?NOVICE FOLX[^\n]*\n?/i, '');
+    // Also remove if whole message is just the header
+    if (/^[📰\s]*(FOLX NEWS|NOVICE FOLX)[\s–\-–]+[\d\.]+[\s|]+[\d:]+[\s📰]*$/i.test(clean.trim())) clean = '';
     // Remove hashtags and extra whitespace
     clean = clean.replace(/#\w+/g, '').trim();
     // Normalize slovenian months
