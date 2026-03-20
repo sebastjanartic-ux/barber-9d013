@@ -162,7 +162,7 @@
         .side-card {
             display: flex;
             gap: 12px;
-            padding: 12px;
+            padding: 16px;
             border: 1px solid var(--border);
             border-radius: 8px;
             cursor: pointer;
@@ -170,8 +170,8 @@
         }
         .side-card:hover { background: var(--light); }
         .side-card img {
-            width: 90px;
-            height: 70px;
+            width: 110px;
+            height: 90px;
             object-fit: cover;
             object-position: center center;
             border-radius: 4px;
@@ -186,10 +186,10 @@
             letter-spacing: 0.8px;
         }
         .side-card h4 {
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            line-height: 1.3;
-            margin-top: 3px;
+            line-height: 1.35;
+            margin-top: 4px;
             color: var(--dark);
         }
         .side-card .meta {
@@ -520,7 +520,7 @@ function shortMsg(msg, len=80) {
 function renderFeatured(posts) {
     if (!posts.length) { document.getElementById('featured-area').innerHTML = ''; return; }
     const main = posts[0];
-    const sides = posts.slice(1, 4);
+    const sides = posts.slice(1, 5);
     
     let sidesHtml = sides.map(p => `
         <div class="side-card" onclick="openModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">
