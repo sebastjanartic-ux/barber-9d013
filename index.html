@@ -53,14 +53,16 @@
         }
         .logo span { color: var(--red); }
         .logo-sub {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             font-weight: 600;
             color: var(--gray);
             display: block;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            margin-top: -2px;
+            margin-top: -3px;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .date-badge {
             font-size: 0.8rem;
@@ -401,14 +403,15 @@
         /* HAMBURGER MENU */
         .hamburger {
             display: none;
-            flex-direction: column;
-            gap: 5px;
             cursor: pointer;
-            padding: 4px;
+            padding: 4px 8px;
+            font-size: 1.6rem;
+            line-height: 1;
+            color: var(--dark);
         }
         .hamburger span {
-            width: 24px;
-            height: 2px;
+            width: 22px;
+            height: 1.5px;
             background: var(--dark);
             display: block;
             transition: all 0.3s;
@@ -466,11 +469,17 @@
             animation: none;
         }
         .ticker-track.scrolling {
-            animation: tickerScroll 8s linear infinite;
+            animation: tickerScroll 14s linear infinite;
         }
         @keyframes tickerScroll {
             0%   { transform: translateX(0); }
             100% { transform: translateX(-50%); }
+        }
+        @media (max-width: 768px) {
+            @keyframes tickerScroll {
+                0%   { transform: translateX(100%); }
+                100% { transform: translateX(-100%); }
+            }
         }
         .ticker-item { display: inline-flex; align-items: center; gap: 4px; }
         .ticker-item .label { font-size: 0.65rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
@@ -489,9 +498,7 @@
                 </div>
             </div>
             <div class="date-badge" id="current-date"></div>
-            <div class="hamburger" onclick="toggleMenu()" id="hamburger">
-                <span></span><span></span><span></span>
-            </div>
+            <div class="hamburger" onclick="toggleMenu()" id="hamburger" style="font-size:1.4rem;font-weight:300;letter-spacing:-1px;color:var(--dark);cursor:pointer;user-select:none;">≡</div>
         </div>
     </div>
 </header>
