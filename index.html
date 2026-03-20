@@ -133,15 +133,33 @@
         .section.active { display: block; }
 
         /* NEWS GRID */
-        .featured-grid {
+        .sub-grid {
             display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 24px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 16px 0 40px;
         }
-        @media (max-width: 768px) {
-            .featured-grid { grid-template-columns: 1fr; }
+        @media (max-width: 900px) { .sub-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 500px) { .sub-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
+        .sub-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
         }
+        .sub-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+        .sub-card img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            object-position: center 15%;
+            display: block;
+        }
+        .sub-card-body { padding: 10px; }
+        .sub-card-body .tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: var(--red); letter-spacing: 0.8px; }
+        .sub-card-body h4 { font-size: 0.8rem; font-weight: 600; line-height: 1.3; margin-top: 4px; color: var(--dark); }
+        .sub-card-body .meta { font-size: 0.65rem; color: var(--gray); margin-top: 5px; }
 
         .featured-card {
             position: relative;
@@ -634,30 +652,28 @@ function shortMsg(msg, len=80) {
 function renderFeatured(posts) {
     if (!posts.length) { document.getElementById('featured-area').innerHTML = ''; return; }
     const main = posts[0];
-    const sides = posts.slice(1, 5);
+    const sub = posts.slice(1, 5);
     
-    let sidesHtml = sides.map(p => `
-        <div class="side-card" onclick="openModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">
-            <img src="${p.full_picture || ''}" alt="" onerror="this.style.display='none'">
-            <div class="side-card-content">
+    let subHtml = sub.map(p => `
+        <div class="sub-card" onclick="openModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+            <img src="${p.full_picture || ''}" alt="" onerror="this.style.background='#f0f0f0'">
+            <div class="sub-card-body">
                 <div class="tag">FOLX NEWS</div>
-                <h4>${shortMsg(p.message, 70) || 'FOLX NEWS'}</h4>
+                <h4>${shortMsg(p.message, 60) || 'FOLX NEWS'}</h4>
                 <div class="meta">${formatDate(p.created_time)}</div>
             </div>
         </div>`).join('');
     
     document.getElementById('featured-area').innerHTML = `
-        <div class="featured-grid">
-            <div class="featured-card" onclick="openModal(${JSON.stringify(main).replace(/"/g,'&quot;')})">
-                <img src="${main.full_picture || ''}" alt="">
-                <div class="overlay">
-                    <div class="tag">FOLX NEWS</div>
-                    <h2>${shortMsg(main.message, 100) || 'FOLX NEWS'}</h2>
-                    <div class="meta">${formatDate(main.created_time)}</div>
-                </div>
+        <div class="featured-card" onclick="openModal(${JSON.stringify(main).replace(/"/g,'&quot;')})">
+            <img src="${main.full_picture || ''}" alt="">
+            <div class="overlay">
+                <div class="tag">FOLX NEWS</div>
+                <h2>${shortMsg(main.message, 100) || 'FOLX NEWS'}</h2>
+                <div class="meta">${formatDate(main.created_time)}</div>
             </div>
-            <div class="side-cards">${sidesHtml}</div>
-        </div>`;
+        </div>
+        <div class="sub-grid">${subHtml}</div>`;
 }
 
 function renderNewsList(posts) {
