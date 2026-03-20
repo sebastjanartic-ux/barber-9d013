@@ -504,12 +504,16 @@ function formatDate(dt) {
 
 function shortMsg(msg, len=80) {
     if (!msg) return '';
-    let clean = msg.replace(/#\w+/g, '').trim();
-    // Normalize slovenian to german in post titles
-    clean = clean.replace(/NOVICE FOLX/gi, 'FOLX NEWS');
-    clean = clean.replace(/\bNOVICE\b/gi, 'NEWS');
+    let clean = msg;
+    // Remove FOLX NEWS header line (📰 FOLX NEWS – DD.MM.YYYY | HH:MM 📰)
+    clean = clean.replace(/^[📰\s]*FOLX NEWS[\s–-]+[\d\.]+[\s|]+[\d:]+[\s📰]*/i, '');
+    clean = clean.replace(/^[📰\s]*NOVICE FOLX[\s–-]+[\d\.]+[\s|]+[\d:]+[\s📰]*/i, '');
+    // Remove hashtags and extra whitespace
+    clean = clean.replace(/#\w+/g, '').trim();
+    // Normalize slovenian months
     clean = clean.replace(/\bmarc\b/gi, 'März').replace(/\bmarec\b/gi, 'März');
-    clean = clean.replace(/\bjanuar\b/gi, 'Januar').replace(/\bfebruar\b/gi, 'Februar');
+    // If nothing left after cleaning, use original truncated
+    if (clean.length < 5) clean = msg.replace(/#\w+/g, '').trim();
     return clean.length > len ? clean.slice(0, len) + '...' : clean;
 }
 
