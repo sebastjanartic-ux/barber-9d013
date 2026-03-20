@@ -36,7 +36,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .header-inner {
-            max-width: 1400px;
+            max-width: 960px;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -57,12 +57,12 @@
             font-weight: 600;
             color: var(--gray);
             display: block;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            margin-top: -3px;
+            margin-top: -2px;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;
+            text-overflow: clip;
         }
         .date-badge {
             font-size: 0.8rem;
@@ -84,7 +84,7 @@
             padding-top: 112px;
         }
         .nav-tabs-inner {
-            max-width: 1400px;
+            max-width: 960px;
             margin: 0 auto;
             display: flex;
             gap: 0;
@@ -110,9 +110,9 @@
 
         /* MAIN LAYOUT */
         .container {
-            max-width: 1100px;
+            max-width: 960px;
             margin: 0 auto;
-            padding: 30px 24px;
+            padding: 24px 20px;
         }
 
         /* SECTION */
@@ -187,11 +187,11 @@
         }
         .side-card:hover { background: var(--light); }
         .side-card img {
-            width: 110px;
-            height: 90px;
+            width: 100px;
+            height: 75px;
             object-fit: cover;
-            object-position: center center;
-            border-radius: 4px;
+            object-position: center 20%;
+            border-radius: 6px;
             flex-shrink: 0;
         }
         .side-card-content {}
@@ -445,7 +445,7 @@
             body { padding-top: 70px; }
         }
 
-        /* WEATHER TICKER */
+        /* WEATHER TICKER - vertical flip */
         .weather-ticker {
             overflow: hidden;
             width: 120px;
@@ -457,33 +457,23 @@
             align-items: center;
             position: relative;
         }
-        @media (max-width: 480px) {
-            .weather-ticker { width: 90px; }
-        }
-        .ticker-track {
-            display: flex;
-            gap: 24px;
-            white-space: nowrap;
+        @media (max-width: 480px) { .weather-ticker { width: 100px; } }
+        .ticker-flip {
             font-size: 0.78rem;
+            font-weight: 600;
             color: var(--dark);
-            animation: none;
+            white-space: nowrap;
+            animation: flipUp 0.4s ease forwards;
         }
-        .ticker-track.scrolling {
-            animation: tickerScroll 14s linear infinite;
+        @keyframes flipUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
         }
-        @keyframes tickerScroll {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        @keyframes flipOut {
+            from { transform: translateY(0);     opacity: 1; }
+            to   { transform: translateY(-100%); opacity: 0; }
         }
-        @media (max-width: 768px) {
-            @keyframes tickerScroll {
-                0%   { transform: translateX(100%); }
-                100% { transform: translateX(-100%); }
-            }
-        }
-        .ticker-item { display: inline-flex; align-items: center; gap: 4px; }
-        .ticker-item .label { font-size: 0.65rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; }
-        .ticker-item .val { font-weight: 600; }
+        .ticker-flip.out { animation: flipOut 0.3s ease forwards; }
     </style>
 </head>
 <body>
@@ -493,9 +483,7 @@
         <a class="logo" href="#">FOLX<span>NEWS</span><span class="logo-sub">Volksmusik & Schlager</span></a>
         <div style="display:flex;align-items:center;gap:12px">
             <div class="weather-ticker" id="weather-ticker">
-                <div class="ticker-track" id="ticker-track">
-                    <span id="w-loading">⏳</span>
-                </div>
+                <div class="ticker-flip" id="ticker-flip">--</div>
             </div>
             <div class="date-badge" id="current-date"></div>
             <div class="hamburger" onclick="toggleMenu()" id="hamburger" style="font-size:1.4rem;font-weight:300;letter-spacing:-1px;color:var(--dark);cursor:pointer;user-select:none;">≡</div>
@@ -777,32 +765,37 @@ async function refreshWeather() {
         const desc = cur.weatherDesc[0].value;
         const icon = Object.entries(weatherIcons).find(([k]) => desc.toLowerCase().includes(k.toLowerCase()))?.[1] || '🌡️';
         
-        // Build ticker items (doubled for seamless loop)
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
-        
-        const items = [
-            `<span class="ticker-item"><span class="val">${icon} ${temp}°C</span></span>`,
-            `<span class="ticker-item"><span class="label">📍</span><span class="val">${city}</span></span>`,
-            `<span class="ticker-item"><span class="label">🕐</span><span class="val">${timeStr}</span></span>`,
+        // Build flip ticker items
+        const getTime = () => new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
+        const flipItems = [
+            () => icon + ' ' + temp + '°C',
+            () => '📍 ' + city,
+            () => '🕐 ' + getTime()
         ];
-        const track = document.getElementById('ticker-track');
-        const doubled = [...items, ...items].join('<span style="margin:0 8px;color:#ddd">|</span>');
-        track.innerHTML = doubled;
-        track.classList.add('scrolling');
+        let flipIdx = 0;
+        const flipEl = document.getElementById('ticker-flip');
         
-        // Update time every minute
-        setInterval(() => {
-            const t = new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
-            const timeEls = track.querySelectorAll('.ticker-item');
-            timeEls.forEach(el => { if(el.textContent.includes(':')) el.querySelector('.val').textContent = t; });
-        }, 60000);
+        function showNext() {
+            flipEl.classList.add('out');
+            setTimeout(() => {
+                flipIdx = (flipIdx + 1) % flipItems.length;
+                flipEl.textContent = flipItems[flipIdx]();
+                flipEl.classList.remove('out');
+                flipEl.style.animation = 'none';
+                flipEl.offsetHeight; // reflow
+                flipEl.style.animation = '';
+            }, 300);
+        }
+        
+        // Show first item
+        flipEl.textContent = flipItems[0]();
+        // Rotate every 3 seconds
+        setInterval(showNext, 3000);
         
     } catch(e) {
-        const track = document.getElementById('ticker-track');
-        if (track) {
-            const now = new Date();
-            track.innerHTML = `<span class="ticker-item"><span class="val">🕐 ${now.toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'})}</span></span>`;
+        const flipEl2 = document.getElementById('ticker-flip');
+        if (flipEl2) {
+            flipEl2.textContent = '🕐 ' + new Date().toLocaleTimeString('de-DE', {hour: '2-digit', minute: '2-digit'});
         }
     }
 }
