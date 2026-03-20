@@ -26,12 +26,13 @@
         header {
             border-bottom: 3px solid var(--red);
             padding: 0 20px;
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             background: #ffffff;
             z-index: 1000;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            -webkit-backdrop-filter: blur(0);
         }
         .header-inner {
             max-width: 1400px;
@@ -68,10 +69,14 @@
             border-bottom: 1px solid var(--border);
             padding: 0 20px;
             background: #ffffff;
-            position: sticky;
+            position: fixed;
             top: 64px;
+            left: 0;
+            right: 0;
             z-index: 999;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        body {
+            padding-top: 112px;
         }
         .nav-tabs-inner {
             max-width: 1400px;
@@ -80,16 +85,17 @@
             gap: 0;
         }
         .tab {
-            padding: 12px 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
+            padding: 10px 18px;
+            font-size: 0.78rem;
+            font-weight: 700;
             color: var(--gray);
             cursor: pointer;
             border-bottom: 3px solid transparent;
             margin-bottom: -1px;
             transition: all 0.2s;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
         }
         .tab.active {
             color: var(--dark);
@@ -388,6 +394,50 @@
             padding: 0 4px;
             line-height: 1;
         }
+
+        /* HAMBURGER MENU */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--dark);
+            display: block;
+            transition: all 0.3s;
+        }
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-bottom: 3px solid var(--red);
+            z-index: 998;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu .tab {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+        .mobile-menu .tab.active {
+            border-bottom-color: var(--border);
+            color: var(--red);
+        }
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .nav-tabs { display: none; }
+            body { padding-top: 64px; }
+        }
     </style>
 </head>
 <body>
@@ -395,16 +445,28 @@
 <header>
     <div class="header-inner">
         <a class="logo" href="#">FOLX<span>NEWS</span><span class="logo-sub">Volksmusik & Schlager</span></a>
-        <div class="date-badge" id="current-date"></div>
+        <div style="display:flex;align-items:center;gap:16px">
+            <div class="date-badge" id="current-date"></div>
+            <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
     </div>
 </header>
 
 <div class="nav-tabs">
     <div class="nav-tabs-inner">
-        <div class="tab active" onclick="showSection('news', this)">📰 NEWS</div>
-        <div class="tab" onclick="showSection('today', this)">📅 Auf diesen Tag</div>
-        <div class="tab" onclick="showSection('reels', this)">🎬 Reels</div>
+        <div class="tab active" onclick="showSection('news', this)">NEWS</div>
+        <div class="tab" onclick="showSection('today', this)">Auf diesen Tag</div>
+        <div class="tab" onclick="showSection('reels', this)">Reels</div>
     </div>
+</div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+    <div class="tab active" onclick="showSection('news', this); closeMenu()">NEWS</div>
+    <div class="tab" onclick="showSection('today', this); closeMenu()">Auf diesen Tag</div>
+    <div class="tab" onclick="showSection('reels', this); closeMenu()">Reels</div>
 </div>
 
 <div class="container">
@@ -644,6 +706,24 @@ document.getElementById('current-date').textContent = new Date().toLocaleDateStr
 // INIT
 // ============================================================
 loadPosts();
+
+// HAMBURGER
+function toggleMenu() {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('open');
+}
+function closeMenu() {
+    document.getElementById('mobile-menu').classList.remove('open');
+}
+// Update mobile menu active state
+const origShowSection = showSection;
+function showSection(name, el) {
+    origShowSection(name, el);
+    // Sync mobile menu tabs
+    document.querySelectorAll('.mobile-menu .tab').forEach(t => t.classList.remove('active'));
+    const mobileTab = document.querySelector(\`.mobile-menu .tab[onclick*="'\${name}'"]\`);
+    if (mobileTab) mobileTab.classList.add('active');
+}
 </script>
 </body>
 </html>
