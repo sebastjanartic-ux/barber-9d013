@@ -3,148 +3,627 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Folx TV Novice</title>
+    <title>FOLX NEWS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0f0f0f;
-            color: #fff;
-            min-height: 100vh;
+        
+        :root {
+            --red: #e00;
+            --dark: #111;
+            --gray: #666;
+            --light: #f5f5f5;
+            --border: #e8e8e8;
         }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fff;
+            color: var(--dark);
+        }
+
+        /* HEADER */
         header {
-            background: linear-gradient(135deg, #c8102e, #8b0000);
-            padding: 20px 30px;
+            border-bottom: 3px solid var(--red);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 15px;
+            justify-content: space-between;
+            height: 64px;
         }
-        header h1 {
-            font-size: 1.8rem;
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--dark);
+            text-decoration: none;
+        }
+        .logo span { color: var(--red); }
+        .logo-sub {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: var(--gray);
+            display: block;
             letter-spacing: 2px;
-            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: -4px;
         }
-        header span {
-            font-size: 0.9rem;
-            opacity: 0.8;
+        .date-badge {
+            font-size: 0.8rem;
+            color: var(--gray);
         }
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
+
+        /* NAV TABS */
+        .nav-tabs {
+            border-bottom: 1px solid var(--border);
             padding: 0 20px;
+            background: #fff;
         }
-        .section-title {
-            font-size: 1.3rem;
-            color: #c8102e;
-            border-left: 4px solid #c8102e;
-            padding-left: 12px;
-            margin-bottom: 25px;
+        .nav-tabs-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0;
+        }
+        .tab {
+            padding: 12px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tab.active {
+            color: var(--dark);
+            border-bottom-color: var(--red);
+        }
+        .tab:hover { color: var(--dark); }
+
+        /* MAIN LAYOUT */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* SECTION */
+        .section { display: none; }
+        .section.active { display: block; }
+
+        /* NEWS GRID */
+        .featured-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 768px) {
+            .featured-grid { grid-template-columns: 1fr; }
+        }
+
+        .featured-card {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .featured-card img {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            display: block;
+        }
+        .featured-card .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            padding: 30px 20px 20px;
+            color: #fff;
+        }
+        .featured-card .tag {
+            font-size: 0.7rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: #ff4444;
+            margin-bottom: 8px;
         }
-        .news-grid {
+        .featured-card h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+        .featured-card .meta {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            margin-top: 6px;
+        }
+
+        .side-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .side-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .side-card:hover { background: var(--light); }
+        .side-card img {
+            width: 90px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .side-card-content {}
+        .side-card .tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--red);
+            letter-spacing: 0.8px;
+        }
+        .side-card h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-top: 3px;
+            color: var(--dark);
+        }
+        .side-card .meta {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        /* ALL NEWS LIST */
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gray);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .news-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
-            margin-bottom: 50px;
         }
+
         .news-card {
-            background: #1a1a1a;
-            border-radius: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.2s;
-            border: 1px solid #2a2a2a;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
         }
-        .news-card:hover { transform: translateY(-3px); }
+        .news-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .news-card img {
             width: 100%;
-            height: 200px;
+            height: 180px;
             object-fit: cover;
         }
-        .news-card .img-placeholder {
+        .news-card-body { padding: 14px; }
+        .news-card .tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--red);
+            letter-spacing: 0.8px;
+        }
+        .news-card h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            line-height: 1.35;
+            margin-top: 6px;
+            color: var(--dark);
+        }
+        .news-card .meta {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 8px;
+        }
+
+        /* REELS SECTION */
+        .reels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .reel-card {
+            background: var(--dark);
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 9/16;
+            position: relative;
+            cursor: pointer;
+        }
+        .reel-card img {
             width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+        .reel-play {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 52px;
+            height: 52px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
+            font-size: 1.4rem;
         }
-        .news-card .content {
-            padding: 15px;
-        }
-        .news-card .date {
+        .reel-card .reel-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: #fff;
             font-size: 0.75rem;
-            color: #888;
-            margin-bottom: 8px;
+            line-height: 1.3;
         }
-        .news-card h3 {
-            font-size: 1rem;
-            line-height: 1.4;
-            margin-bottom: 10px;
-        }
-        .news-card p {
-            font-size: 0.85rem;
-            color: #aaa;
-            line-height: 1.5;
-        }
+
+        /* LOADING */
         .loading {
             text-align: center;
-            padding: 60px;
-            color: #888;
-            font-size: 1.1rem;
+            padding: 60px 20px;
+            color: var(--gray);
         }
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--red);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* FOOTER */
         footer {
+            border-top: 1px solid var(--border);
+            padding: 20px;
             text-align: center;
-            padding: 30px;
-            color: #555;
+            color: var(--gray);
             font-size: 0.8rem;
-            border-top: 1px solid #222;
+            margin-top: 60px;
+        }
+        .footer-logo { font-weight: 800; color: var(--dark); }
+        .footer-logo span { color: var(--red); }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: #fff;
+            max-width: 600px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 12px;
+        }
+        .modal img {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 12px 12px 0 0;
+        }
+        .modal-body { padding: 24px; }
+        .modal-body .tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--red);
+            letter-spacing: 1px;
+        }
+        .modal-body h2 { margin: 10px 0; font-size: 1.3rem; line-height: 1.4; }
+        .modal-body p { color: #444; line-height: 1.6; font-size: 0.9rem; }
+        .modal-body .fb-link {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: #1877f2;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            background: none;
+            border: none;
+            padding: 0 4px;
+            line-height: 1;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div>
-            <h1>🎵 FOLX TV NOVICE</h1>
-            <span>Schlager & Volksmusik Nachrichten</span>
-        </div>
-    </header>
 
-    <div class="container">
-        <h2 class="section-title">📅 Na današnji dan</h2>
-        <div class="news-grid" id="today-grid">
-            <div class="loading">Naložujem...</div>
-        </div>
+<header>
+    <div class="header-inner">
+        <a class="logo" href="#">FOLX<span>NEWS</span><span class="logo-sub">Schlager & Volksmusik</span></a>
+        <div class="date-badge" id="current-date"></div>
+    </div>
+</header>
 
-        <h2 class="section-title">🎤 Šlager novice</h2>
-        <div class="news-grid" id="news-grid">
-            <div class="loading">Naložujem...</div>
+<div class="nav-tabs">
+    <div class="nav-tabs-inner">
+        <div class="tab active" onclick="showSection('news', this)">📰 Novice</div>
+        <div class="tab" onclick="showSection('today', this)">📅 Auf diesen Tag</div>
+        <div class="tab" onclick="showSection('reels', this)">🎬 Reeli</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- NEWS SECTION -->
+    <div class="section active" id="section-news">
+        <div id="featured-area">
+            <div class="loading"><div class="spinner"></div>Naložujem novice...</div>
+        </div>
+        <p class="section-title" style="margin-top:30px">Vse novice</p>
+        <div class="news-list" id="news-list"></div>
+    </div>
+
+    <!-- TODAY SECTION -->
+    <div class="section" id="section-today">
+        <p class="section-title">Auf diesen Tag</p>
+        <div class="news-list" id="today-list">
+            <div class="loading"><div class="spinner"></div>Naložujem...</div>
         </div>
     </div>
 
-    <footer>© Folx TV — Schlager & Volksmusik</footer>
+    <!-- REELS SECTION -->
+    <div class="section" id="section-reels">
+        <p class="section-title">Reeli</p>
+        <div class="reels-grid" id="reels-list">
+            <div class="loading" style="grid-column:1/-1"><div class="spinner"></div>Naložujem reele...</div>
+        </div>
+    </div>
+</div>
 
-    <script>
-        // Placeholder - bo napolnjeno iz FB API
-        document.getElementById('today-grid').innerHTML = `
-            <div class="news-card">
-                <div class="img-placeholder">🎵</div>
-                <div class="content">
-                    <div class="date">Danes · 20. März 2026</div>
-                    <h3>Vsebina se nalaga...</h3>
-                    <p>Novice iz Facebook strani Folx TV bodo kmalu tukaj.</p>
+<footer>
+    <div class="footer-logo">FOLX<span>NEWS</span></div>
+    <p>© FOLX MUSIC Television — Schlager & Volksmusik</p>
+</footer>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal" id="modal-content">
+        <div class="modal-body">
+            <button class="modal-close" onclick="closeModalBtn()">✕</button>
+            <div class="tag" id="modal-tag"></div>
+            <h2 id="modal-title"></h2>
+            <p id="modal-text"></p>
+            <a class="fb-link" id="modal-link" href="#" target="_blank">Auf Facebook ansehen →</a>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG — FB Page posts via proxy or direct embed
+// ============================================================
+const FB_PAGE_URL = "https://www.facebook.com/folxmusictv";
+
+// Posts data (injected from FB API via build script, or loaded live)
+// Format: {id, message, created_time, full_picture, permalink_url, type}
+let allPosts = [];
+
+// ============================================================
+// FETCH POSTS
+// ============================================================
+async function loadPosts() {
+    try {
+        // Try loading from data.json (static build output)
+        const r = await fetch('./data.json');
+        if (r.ok) {
+            allPosts = await r.json();
+            render();
+            return;
+        }
+    } catch(e) {}
+    
+    // Fallback: show placeholder
+    renderPlaceholder();
+}
+
+function renderPlaceholder() {
+    document.getElementById('featured-area').innerHTML = `
+        <div style="padding:40px;text-align:center;color:#999;border:2px dashed #eee;border-radius:8px">
+            <div style="font-size:2rem;margin-bottom:10px">📰</div>
+            <p style="font-weight:600">Vsebina se nalaga...</p>
+            <p style="font-size:0.85rem;margin-top:6px">Novice bodo kmalu tukaj</p>
+        </div>`;
+    document.getElementById('news-list').innerHTML = '';
+    document.getElementById('today-list').innerHTML = '';
+    document.getElementById('reels-list').innerHTML = '';
+}
+
+function render() {
+    const news = allPosts.filter(p => p.type === 'news');
+    const today = allPosts.filter(p => p.type === 'today');
+    const reels = allPosts.filter(p => p.type === 'reel');
+    
+    renderFeatured(news);
+    renderNewsList(news);
+    renderToday(today);
+    renderReels(reels);
+}
+
+function formatDate(dt) {
+    const d = new Date(dt);
+    return d.toLocaleDateString('de-AT', {day:'numeric', month:'long', year:'numeric'});
+}
+
+function shortMsg(msg, len=80) {
+    if (!msg) return '';
+    const clean = msg.replace(/#\w+/g, '').trim();
+    return clean.length > len ? clean.slice(0, len) + '...' : clean;
+}
+
+function renderFeatured(posts) {
+    if (!posts.length) { document.getElementById('featured-area').innerHTML = ''; return; }
+    const main = posts[0];
+    const sides = posts.slice(1, 4);
+    
+    let sidesHtml = sides.map(p => `
+        <div class="side-card" onclick="openModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+            <img src="${p.full_picture || ''}" alt="" onerror="this.style.display='none'">
+            <div class="side-card-content">
+                <div class="tag">FOLX NEWS</div>
+                <h4>${shortMsg(p.message, 70)}</h4>
+                <div class="meta">${formatDate(p.created_time)}</div>
+            </div>
+        </div>`).join('');
+    
+    document.getElementById('featured-area').innerHTML = `
+        <div class="featured-grid">
+            <div class="featured-card" onclick="openModal(${JSON.stringify(main).replace(/"/g,'&quot;')})">
+                <img src="${main.full_picture || ''}" alt="">
+                <div class="overlay">
+                    <div class="tag">FOLX NEWS</div>
+                    <h2>${shortMsg(main.message, 100)}</h2>
+                    <div class="meta">${formatDate(main.created_time)}</div>
                 </div>
-            </div>`;
-        document.getElementById('news-grid').innerHTML = `
-            <div class="news-card">
-                <div class="img-placeholder">🎶</div>
-                <div class="content">
-                    <div class="date">Diese Woche</div>
-                    <h3>Schlager Nachrichten</h3>
-                    <p>Aktuelle Neuigkeiten aus der Schlager- und Volksmusikwelt.</p>
-                </div>
-            </div>`;
-    </script>
+            </div>
+            <div class="side-cards">${sidesHtml}</div>
+        </div>`;
+}
+
+function renderNewsList(posts) {
+    if (!posts.length) { document.getElementById('news-list').innerHTML = ''; return; }
+    document.getElementById('news-list').innerHTML = posts.slice(4).map(p => `
+        <div class="news-card" onclick="openModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+            <img src="${p.full_picture || ''}" alt="" onerror="this.style.background='#f0f0f0'">
+            <div class="news-card-body">
+                <div class="tag">FOLX NEWS</div>
+                <h3>${shortMsg(p.message, 80)}</h3>
+                <div class="meta">${formatDate(p.created_time)}</div>
+            </div>
+        </div>`).join('');
+}
+
+function renderToday(posts) {
+    const el = document.getElementById('today-list');
+    if (!posts.length) { el.innerHTML = '<div class="loading">Ni objav za danes.</div>'; return; }
+    el.innerHTML = posts.map(p => `
+        <div class="news-card" onclick="openModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+            <img src="${p.full_picture || ''}" alt="" onerror="this.style.background='#f0f0f0'">
+            <div class="news-card-body">
+                <div class="tag">Auf diesen Tag</div>
+                <h3>${shortMsg(p.message, 100)}</h3>
+                <div class="meta">${formatDate(p.created_time)}</div>
+            </div>
+        </div>`).join('');
+}
+
+function renderReels(posts) {
+    const el = document.getElementById('reels-list');
+    if (!posts.length) { el.innerHTML = '<div class="loading" style="grid-column:1/-1">Ni relov za danes.</div>'; return; }
+    el.innerHTML = posts.map(p => `
+        <div class="reel-card" onclick="window.open('${p.permalink_url}','_blank')">
+            <img src="${p.full_picture || ''}" alt="" onerror="this.style.background='#222'">
+            <div class="reel-play">▶</div>
+            <div class="reel-text">${shortMsg(p.message, 60)}</div>
+        </div>`).join('');
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(post) {
+    const m = document.getElementById('modal');
+    const mc = document.getElementById('modal-content');
+    
+    const tag = post.type === 'today' ? 'Auf diesen Tag' : post.type === 'reel' ? 'Reel' : 'FOLX NEWS';
+    
+    mc.innerHTML = `
+        ${post.full_picture ? `<img src="${post.full_picture}" alt="">` : ''}
+        <div class="modal-body">
+            <button class="modal-close" onclick="closeModalBtn()">✕</button>
+            <div class="tag">${tag}</div>
+            <h2>${formatDate(post.created_time)}</h2>
+            <p>${(post.message || '').replace(/\n/g, '<br>')}</p>
+            <a class="fb-link" href="${post.permalink_url || '#'}" target="_blank">Auf Facebook ansehen →</a>
+        </div>`;
+    
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModalBtn() {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+function closeModal(e) {
+    if (e.target.id === 'modal') closeModalBtn();
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function showSection(name, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('section-' + name).classList.add('active');
+}
+
+// ============================================================
+// DATE
+// ============================================================
+document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-AT', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+});
+
+// ============================================================
+// INIT
+// ============================================================
+loadPosts();
+</script>
 </body>
 </html>
