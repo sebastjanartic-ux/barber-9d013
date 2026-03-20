@@ -53,15 +53,14 @@
         }
         .logo span { color: var(--red); }
         .logo-sub {
-            font-size: 0.62rem;
-            font-weight: 500;
+            font-size: 0.55rem;
+            font-weight: 600;
             color: var(--gray);
             display: block;
-            letter-spacing: 3.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            margin-top: -3px;
-            text-align: justify;
-            text-align-last: justify;
+            margin-top: -2px;
+            white-space: nowrap;
         }
         .date-badge {
             font-size: 0.8rem;
@@ -608,10 +607,11 @@ function shortMsg(msg, len=80) {
     if (!msg) return '';
     let clean = msg;
     // Remove FOLX NEWS header line (📰 FOLX NEWS – DD.MM.YYYY | HH:MM 📰)
-    clean = clean.replace(/^[\s\S]*?FOLX NEWS[^\n]*\n?/i, '');
-    clean = clean.replace(/^[\s\S]*?NOVICE FOLX[^\n]*\n?/i, '');
-    // Also remove if whole message is just the header
-    if (/^[📰\s]*(FOLX NEWS|NOVICE FOLX)[\s–\-–]+[\d\.]+[\s|]+[\d:]+[\s📰]*$/i.test(clean.trim())) clean = '';
+    // Remove FOLX NEWS header line
+    clean = clean.replace(/[📰]?\s*FOLX NEWS\s*[–\-]+\s*[\d.]+\s*[|]\s*[\d:]+\s*[📰]?\n?/gi, '');
+    clean = clean.replace(/[📰]?\s*NOVICE FOLX\s*[–\-]+\s*[\d.]+\s*[|]\s*[\d:]+\s*[📰]?\n?/gi, '');
+    // Remove newspaper emoji header
+    clean = clean.replace(/^[\s🗞️📰]+FOLX NEWS[^\n]*\n?/gim, '');
     // Remove hashtags and extra whitespace
     clean = clean.replace(/#\w+/g, '').trim();
     // Normalize slovenian months
