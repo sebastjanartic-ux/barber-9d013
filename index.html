@@ -606,11 +606,10 @@ function shortMsg(msg, len=80) {
     if (!msg) return '';
     let clean = msg;
     // Remove FOLX NEWS header line (📰 FOLX NEWS – DD.MM.YYYY | HH:MM 📰)
-    // Remove FOLX NEWS header line
-    clean = clean.replace(/[📰]?\s*FOLX NEWS\s*[–\-]+\s*[\d.]+\s*[|]\s*[\d:]+\s*[📰]?\n?/gi, '');
-    clean = clean.replace(/[📰]?\s*NOVICE FOLX\s*[–\-]+\s*[\d.]+\s*[|]\s*[\d:]+\s*[📰]?\n?/gi, '');
-    // Remove newspaper emoji header
-    clean = clean.replace(/^[\s🗞️📰]+FOLX NEWS[^\n]*\n?/gim, '');
+    // Remove FOLX NEWS / NOVICE FOLX header lines completely
+    clean = clean.replace(/^.*?(FOLX NEWS|NOVICE FOLX).*?(\n|$)/gim, '');
+    // Remove leftover emojis at start
+    clean = clean.replace(/^[📰🗞️\s]+/, '').trim();
     // Remove hashtags and extra whitespace
     clean = clean.replace(/#\w+/g, '').trim();
     // Normalize slovenian months
