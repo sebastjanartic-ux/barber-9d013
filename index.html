@@ -748,13 +748,19 @@ const weatherIcons = {
     'Blizzard': '🌨️', 'Heavy rain': '🌧️', 'Light rain': '🌦️'
 };
 
-async function loadWeather(lat, lon) {
+async function refreshWeather() {
     try {
+        // Step 1: Get city from IP (no permission needed)
+        const geo = await fetch('https://ipapi.co/json/');
+        const loc = await geo.json();
+        const city = loc.city || loc.region || '';
+        const lat = loc.latitude;
+        const lon = loc.longitude;
+        
+        // Step 2: Get weather from wttr.in
         const r = await fetch(`https://wttr.in/${lat},${lon}?format=j1`);
         const d = await r.json();
         const cur = d.current_condition[0];
-        const area = d.nearest_area[0];
-        const city = area.areaName[0].value || area.region[0].value || '';
         const temp = cur.temp_C;
         const desc = cur.weatherDesc[0].value;
         const icon = Object.entries(weatherIcons).find(([k]) => desc.toLowerCase().includes(k.toLowerCase()))?.[1] || '🌡️';
@@ -763,20 +769,11 @@ async function loadWeather(lat, lon) {
         document.getElementById('w-temp').textContent = temp + '°C';
         document.getElementById('w-city').textContent = city;
     } catch(e) {
-        document.getElementById('w-city').textContent = '';
+        document.getElementById('w-widget') && (document.getElementById('weather-widget').style.display = 'none');
     }
 }
 
-function refreshWeather() {
-    if (!navigator.geolocation) return;
-    document.getElementById('w-temp').textContent = '...';
-    navigator.geolocation.getCurrentPosition(
-        pos => loadWeather(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
-        () => { document.getElementById('w-city').textContent = ''; }
-    );
-}
-
-// Auto-load on start
+// Auto-load on start — no click needed
 refreshWeather();
 
 // HAMBURGER
