@@ -814,8 +814,8 @@ async function refreshWeather() {
     }
 }
 
-// Auto-load on start — no click needed
-refreshWeather();
+// Auto-load on start — no click needed, delay weather so page renders first
+setTimeout(refreshWeather, 500);
 
 // HAMBURGER
 function toggleMenu() {
