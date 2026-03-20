@@ -392,9 +392,9 @@
 
 <div class="nav-tabs">
     <div class="nav-tabs-inner">
-        <div class="tab active" onclick="showSection('news', this)">📰 Novice</div>
+        <div class="tab active" onclick="showSection('news', this)">📰 NEWS</div>
         <div class="tab" onclick="showSection('today', this)">📅 Auf diesen Tag</div>
-        <div class="tab" onclick="showSection('reels', this)">🎬 Reeli</div>
+        <div class="tab" onclick="showSection('reels', this)">🎬 Reels</div>
     </div>
 </div>
 
@@ -402,9 +402,9 @@
     <!-- NEWS SECTION -->
     <div class="section active" id="section-news">
         <div id="featured-area">
-            <div class="loading"><div class="spinner"></div>Naložujem novice...</div>
+            <div class="loading"><div class="spinner"></div>Nachrichten werden geladen...</div>
         </div>
-        <p class="section-title" style="margin-top:30px">Vse novice</p>
+        <p class="section-title">Alle News</p>
         <div class="news-list" id="news-list"></div>
     </div>
 
@@ -412,15 +412,15 @@
     <div class="section" id="section-today">
         <p class="section-title">Auf diesen Tag</p>
         <div class="news-list" id="today-list">
-            <div class="loading"><div class="spinner"></div>Naložujem...</div>
+            <div class="loading"><div class="spinner"></div>Wird geladen...</div>
         </div>
     </div>
 
     <!-- REELS SECTION -->
     <div class="section" id="section-reels">
-        <p class="section-title">Reeli</p>
+        <p class="section-title">Reels</p>
         <div class="reels-grid" id="reels-list">
-            <div class="loading" style="grid-column:1/-1"><div class="spinner"></div>Naložujem reele...</div>
+            <div class="loading" style="grid-column:1/-1"><div class="spinner"></div>Wird geladen...ele...</div>
         </div>
     </div>
 </div>
@@ -475,8 +475,8 @@ function renderPlaceholder() {
     document.getElementById('featured-area').innerHTML = `
         <div style="padding:40px;text-align:center;color:#999;border:2px dashed #eee;border-radius:8px">
             <div style="font-size:2rem;margin-bottom:10px">📰</div>
-            <p style="font-weight:600">Vsebina se nalaga...</p>
-            <p style="font-size:0.85rem;margin-top:6px">Novice bodo kmalu tukaj</p>
+            <p style="font-weight:600">Inhalte werden geladen...</p>
+            <p style="font-size:0.85rem;margin-top:6px">News erscheinen in Kürze</p>
         </div>`;
     document.getElementById('news-list').innerHTML = '';
     document.getElementById('today-list').innerHTML = '';
@@ -496,7 +496,7 @@ function render() {
 
 function formatDate(dt) {
     const d = new Date(dt);
-    return d.toLocaleDateString('de-AT', {day:'numeric', month:'long', year:'numeric'});
+    return d.toLocaleDateString('de-DE', {day:'numeric', month:'long', year:'numeric'});
 }
 
 function shortMsg(msg, len=80) {
@@ -549,7 +549,7 @@ function renderNewsList(posts) {
 
 function renderToday(posts) {
     const el = document.getElementById('today-list');
-    if (!posts.length) { el.innerHTML = '<div class="loading">Ni objav za danes.</div>'; return; }
+    if (!posts.length) { el.innerHTML = '<div class="loading">Keine Beiträge für heute.</div>'; return; }
     el.innerHTML = posts.map(p => `
         <div class="news-card" onclick="openModal(${JSON.stringify(p).replace(/"/g,'&quot;')})">
             <img src="${p.full_picture || ''}" alt="" onerror="this.style.background='#f0f0f0'">
@@ -563,7 +563,7 @@ function renderToday(posts) {
 
 function renderReels(posts) {
     const el = document.getElementById('reels-list');
-    if (!posts.length) { el.innerHTML = '<div class="loading" style="grid-column:1/-1">Ni relov za danes.</div>'; return; }
+    if (!posts.length) { el.innerHTML = '<div class="loading" style="grid-column:1/-1">Keine Reels für heute.</div>'; return; }
     el.innerHTML = posts.map(p => `
         <div class="reel-card" onclick="window.open('${p.permalink_url}','_blank')">
             <img src="${p.full_picture || ''}" alt="" onerror="this.style.background='#222'">
@@ -616,7 +616,7 @@ function showSection(name, el) {
 // ============================================================
 // DATE
 // ============================================================
-document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-AT', {
+document.getElementById('current-date').textContent = new Date().toLocaleDateString('de-DE', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
 });
 
