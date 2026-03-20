@@ -108,9 +108,9 @@
 
         /* MAIN LAYOUT */
         .container {
-            max-width: 1400px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 30px 30px;
+            padding: 30px 24px;
         }
 
         /* SECTION */
@@ -441,6 +441,28 @@
             .nav-tabs { display: none; }
             body { padding-top: 64px; }
         }
+
+        /* WEATHER WIDGET */
+        .weather-widget {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .weather-widget:hover { background: var(--light); }
+        .weather-widget .wicon { font-size: 1rem; }
+        .weather-widget .wtemp { font-weight: 600; color: var(--dark); }
+        .weather-widget .wcity { font-size: 0.7rem; }
+        @media (max-width: 480px) {
+            .weather-widget .wcity { display: none; }
+        }
     </style>
 </head>
 <body>
@@ -448,7 +470,12 @@
 <header>
     <div class="header-inner">
         <a class="logo" href="#">FOLX<span>NEWS</span><span class="logo-sub">Volksmusik & Schlager</span></a>
-        <div style="display:flex;align-items:center;gap:16px">
+        <div style="display:flex;align-items:center;gap:12px">
+            <div class="weather-widget" id="weather-widget" onclick="refreshWeather()" title="Standort-Wetter">
+                <span class="wicon" id="w-icon">🌡️</span>
+                <span class="wtemp" id="w-temp">--°</span>
+                <span class="wcity" id="w-city">...</span>
+            </div>
             <div class="date-badge" id="current-date"></div>
             <div class="hamburger" onclick="toggleMenu()" id="hamburger">
                 <span></span><span></span><span></span>
@@ -709,6 +736,48 @@ document.getElementById('current-date').textContent = new Date().toLocaleDateStr
 // INIT
 // ============================================================
 loadPosts();
+
+
+// ============================================================
+// WEATHER — via browser geolocation + wttr.in
+// ============================================================
+const weatherIcons = {
+    'Sunny': '☀️', 'Clear': '🌙', 'Partly cloudy': '⛅', 'Cloudy': '☁️',
+    'Overcast': '☁️', 'Mist': '🌫️', 'Fog': '🌫️', 'Rain': '🌧️',
+    'Drizzle': '🌦️', 'Snow': '❄️', 'Sleet': '🌨️', 'Thunder': '⛈️',
+    'Blizzard': '🌨️', 'Heavy rain': '🌧️', 'Light rain': '🌦️'
+};
+
+async function loadWeather(lat, lon) {
+    try {
+        const r = await fetch(`https://wttr.in/${lat},${lon}?format=j1`);
+        const d = await r.json();
+        const cur = d.current_condition[0];
+        const area = d.nearest_area[0];
+        const city = area.areaName[0].value || area.region[0].value || '';
+        const temp = cur.temp_C;
+        const desc = cur.weatherDesc[0].value;
+        const icon = Object.entries(weatherIcons).find(([k]) => desc.toLowerCase().includes(k.toLowerCase()))?.[1] || '🌡️';
+        
+        document.getElementById('w-icon').textContent = icon;
+        document.getElementById('w-temp').textContent = temp + '°C';
+        document.getElementById('w-city').textContent = city;
+    } catch(e) {
+        document.getElementById('w-city').textContent = '';
+    }
+}
+
+function refreshWeather() {
+    if (!navigator.geolocation) return;
+    document.getElementById('w-temp').textContent = '...';
+    navigator.geolocation.getCurrentPosition(
+        pos => loadWeather(pos.coords.latitude.toFixed(4), pos.coords.longitude.toFixed(4)),
+        () => { document.getElementById('w-city').textContent = ''; }
+    );
+}
+
+// Auto-load on start
+refreshWeather();
 
 // HAMBURGER
 function toggleMenu() {
