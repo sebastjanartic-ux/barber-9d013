@@ -641,7 +641,7 @@ function renderFeatured(posts) {
             <img src="${p.full_picture || ''}" alt="" onerror="this.style.display='none'">
             <div class="side-card-content">
                 <div class="tag">FOLX NEWS</div>
-                <h4>${shortMsg(p.message, 70)}</h4>
+                <h4>${shortMsg(p.message, 70) || 'FOLX NEWS'}</h4>
                 <div class="meta">${formatDate(p.created_time)}</div>
             </div>
         </div>`).join('');
@@ -652,7 +652,7 @@ function renderFeatured(posts) {
                 <img src="${main.full_picture || ''}" alt="">
                 <div class="overlay">
                     <div class="tag">FOLX NEWS</div>
-                    <h2>${shortMsg(main.message, 100)}</h2>
+                    <h2>${shortMsg(main.message, 100) || 'FOLX NEWS'}</h2>
                     <div class="meta">${formatDate(main.created_time)}</div>
                 </div>
             </div>
