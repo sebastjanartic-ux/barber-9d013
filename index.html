@@ -55,26 +55,26 @@
         .logo {
             font-size: 1.6rem;
             font-weight: 800;
-            letter-spacing: -1px;
             color: var(--dark);
             text-decoration: none;
             display: inline-flex;
             flex-direction: column;
-            align-items: stretch;
+            line-height: 1.1;
         }
-        .logo span { color: var(--red); }
+        .logo-main { letter-spacing: -1px; display: block; }
+        .logo-red { color: var(--red); }
         .logo-sub {
-            font-size: 0.5rem;
+            font-size: 0.48rem;
             font-weight: 600;
             color: var(--gray);
             display: block;
             text-transform: uppercase;
-            margin-top: -2px;
+            margin-top: 1px;
+            letter-spacing: 0;
+            word-spacing: 0;
             text-align: justify;
             text-align-last: justify;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: clip;
+            width: 100%;
         }
         .date-badge {
             font-size: 0.8rem;
@@ -517,7 +517,10 @@
 
 <header>
     <div class="header-inner">
-        <a class="logo" href="#">FOLX<span>NEWS</span><span class="logo-sub">Volksmusik &amp; Schlager</span></a>
+        <a class="logo" href="#">
+    <span class="logo-main">FOLX<span class="logo-red">NEWS</span></span>
+    <span class="logo-sub">Volksmusik &amp; Schlager</span>
+</a>
         <div style="display:flex;align-items:center;gap:12px">
             <div class="weather-ticker" id="weather-ticker">
                 <div class="ticker-flip" id="ticker-flip"></div>
